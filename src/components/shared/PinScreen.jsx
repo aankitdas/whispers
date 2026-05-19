@@ -49,8 +49,8 @@ export default function PinScreen({ side, onSuccess }) {
   return (
     <div className="page" style={{ background: 'var(--cream)' }}>
       <AnimatedBackground />
-      <div className="flex flex-col items-center justify-center min-h-screen px-8 relative z-10">
-        
+      <div className="pin-inner flex flex-col items-center justify-center min-h-screen px-8 relative z-10" style={{ width: '100%' }}>
+
         {/* Logo / wordmark */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}

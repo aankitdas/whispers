@@ -3,11 +3,14 @@ import { supabase } from '../../lib/supabase'
 import { useEffect } from 'react'
 
 const MOOD_META = {
-  tender:       { emoji: '🌸', color: 'rgba(232,196,184,0.3)' },
-  playful:      { emoji: '✨', color: 'rgba(232,213,163,0.3)' },
-  'missing you':{ emoji: '🌙', color: 'rgba(168,181,160,0.3)' },
-  grateful:     { emoji: '🌼', color: 'rgba(232,213,163,0.25)' },
-  proud:        { emoji: '🌿', color: 'rgba(168,181,160,0.25)' },
+  tender: { emoji: '🌸', color: 'rgba(232,196,184,0.3)' },
+  playful: { emoji: '✨', color: 'rgba(232,213,163,0.3)' },
+  'missing you': { emoji: '🌙', color: 'rgba(168,181,160,0.3)' },
+  grateful: { emoji: '🌼', color: 'rgba(232,213,163,0.25)' },
+  proud: { emoji: '🌿', color: 'rgba(168,181,160,0.25)' },
+  'in awe': { emoji: '🌊', color: 'rgba(168,181,160,0.2)' },
+  silly: { emoji: '🦋', color: 'rgba(232,213,163,0.2)' },
+  lucky: { emoji: '🍀', color: 'rgba(168,181,160,0.2)' },
 }
 
 function formatFull(dateStr) {
@@ -17,7 +20,13 @@ function formatFull(dateStr) {
 }
 
 export default function WhisperDetail({ whisper, onClose }) {
-  const mood = MOOD_META[whisper?.mood] || { emoji: '✦', color: 'rgba(232,196,184,0.2)' }
+  const isPreset = whisper?.mood && MOOD_META[whisper.mood]
+  const mood = isPreset
+    ? MOOD_META[whisper.mood]
+    : { emoji: [...(whisper?.mood || '')][0] || '✦', color: 'rgba(232,196,184,0.2)' }
+  const customMoodLabel = !isPreset && whisper?.mood
+    ? (whisper.mood.match(/\s(.+)/) || [])[1] || whisper.mood
+    : null
 
   useEffect(() => {
     if (whisper && !whisper.is_read) {
@@ -84,9 +93,16 @@ export default function WhisperDetail({ whisper, onClose }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
-              style={{ marginBottom: '16px' }}
+              style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}
             >
-              <span style={{ fontSize: '24px' }}>{mood.emoji}</span>
+              <span style={{ fontSize: '22px' }}>{mood.emoji}</span>
+              <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '14px', color: 'var(--sage-deep)' }}>
+                {customMoodLabel
+                  ? `he's feeling ${customMoodLabel}`
+                  : whisper.mood === 'missing you' ? "he's missing you"
+                    : whisper.mood === 'in awe' ? "he's in awe of you"
+                      : `he's feeling ${whisper.mood}`}
+              </span>
             </motion.div>
           )}
 

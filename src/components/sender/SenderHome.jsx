@@ -92,7 +92,7 @@ export default function SenderHome() {
     <div className="page" style={{ background: 'var(--cream)' }}>
       <AnimatedBackground />
 
-      <div style={{ maxWidth: '480px', margin: '0 auto', width: '100%', padding: '32px 20px 80px', position: 'relative', zIndex: 1 }}>
+      <div style={{ maxWidth: '480px', margin: '0 auto', width: '100%', padding: '40px 20px 80px', position: 'relative', zIndex: 1 }}>
 
         {/* Header */}
         <motion.div
@@ -117,7 +117,8 @@ export default function SenderHome() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.5 }}
-          className="flex items-center gap-3 mb-8"
+          className="flex items-center flex-wrap gap-3"
+          style={{ marginBottom: '24px' }}
         >
           {streak > 0 && (
             <div className="streak-badge">
@@ -146,8 +147,8 @@ export default function SenderHome() {
           whileHover={{ y: -3, boxShadow: 'var(--shadow-float)' }}
           whileTap={{ scale: 0.98 }}
         >
-          <p style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '16px', color: 'rgba(44,44,44,0.35)', marginBottom: '16px' }}>
-            Are you thinking of her right now?
+          <p style={{ fontFamily: 'var(--font-display)', fontSize: '13px', letterSpacing: '0.12em', color: 'rgba(44,44,44,0.3)', textTransform: 'uppercase', marginBottom: '16px', textAlign: 'center' }}>
+            ✦ &nbsp; Are you thinking of her right now? &nbsp; ✦
           </p>
           <div className="btn-primary" style={{ pointerEvents: 'none' }}>
             <span>Send a Whisper</span>

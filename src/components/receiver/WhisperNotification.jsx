@@ -1,6 +1,11 @@
 import { motion } from 'framer-motion'
+import { useEffect } from 'react'
 
 export default function WhisperNotification({ whisper, onOpen, onDismiss }) {
+  useEffect(() => {
+    const timer = setTimeout(onDismiss, 4000)
+    return () => clearTimeout(timer)
+  }, [])
   return (
     <div className="whisper-notification">
       <motion.div

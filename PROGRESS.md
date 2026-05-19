@@ -19,22 +19,14 @@
 - [x] Project folder structure planned
 - [x] DECISIONS.md written, PROGRESS.md written
 - [x] All open questions answered (Jen, PIN, calendar, streak, notification UX)
-- [x] **Phase 1.1 COMPLETE** — Vite + React scaffold, all deps installed
-- [x] **Phase 1.2 COMPLETE** — Full design system (CSS variables, typography, components)
-- [x] **Phase 1.3 COMPLETE** — All source files written, clean production build ✓
-  - `src/lib/supabase.js` — Supabase client
-  - `src/lib/realtimeHook.js` — useWhisperListener
-  - `src/store/useStore.js` — Zustand store
-  - `src/components/shared/` — AnimatedBackground, PinScreen, WhisperCard, MoodSelector
-  - `src/components/sender/` — SenderHome, ComposeWhisper
-  - `src/components/receiver/` — ReceiverHome, WhisperNotification, WhisperDetail, WhisperCalendar
-  - `src/pages/` — SendPage, HerPage
-  - `supabase-schema.sql` — ready to run
-  - `.env.example` — template
+- [x] **Phase 1 COMPLETE** — Full app scaffolded, all components written, clean build
+- [x] **Phase 2 COMPLETE** — Supabase schema deployed, realtime confirmed working
+- [x] **Phase 3 COMPLETE** — Hosted on Vercel (whisper-one-flame.vercel.app)
+- [x] **SMOKE TEST PASSED ✦** — Realtime whisper sent phone → laptop, notification fired instantly
 
 ---
 
-## 🔄 In Progress — Phase 1.4: Your Setup Steps
+## 🔄 In Progress — Phase 4: Polish & Aesthetics
 
 ---
 
@@ -140,4 +132,3 @@
 - Research done on animation libraries, Supabase limits
 - Stack finalized: React/Vite + Framer Motion + GSAP + Supabase + Vercel
 - Waiting on answers to open questions before scaffolding
-
