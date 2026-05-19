@@ -4,48 +4,103 @@ import { gsap } from 'gsap'
 import { supabase } from '../../lib/supabase'
 import MoodSelector from '../shared/MoodSelector'
 
+// Compress image using canvas before upload
+async function compressImage(file, maxWidth = 1200, quality = 0.75) {
+  return new Promise((resolve) => {
+    const img = new Image()
+    const url = URL.createObjectURL(file)
+    img.onload = () => {
+      const scale = Math.min(1, maxWidth / img.width)
+      const canvas = document.createElement('canvas')
+      canvas.width = img.width * scale
+      canvas.height = img.height * scale
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+      canvas.toBlob((blob) => {
+        URL.revokeObjectURL(url)
+        resolve(blob)
+      }, 'image/jpeg', quality)
+    }
+    img.src = url
+  })
+}
+
 export default function ComposeWhisper({ onClose, onSent }) {
   const [trigger, setTrigger] = useState('')
   const [message, setMessage] = useState('')
   const [mood, setMood] = useState(null)
   const [location, setLocation] = useState('')
+  const [imageFile, setImageFile] = useState(null)
+  const [imagePreview, setImagePreview] = useState(null)
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const sendBtnRef = useRef()
   const lanternRef = useRef()
+  const fileInputRef = useRef()
+
+  function handleImagePick(e) {
+    const file = e.target.files[0]
+    if (!file) return
+    setImageFile(file)
+    setImagePreview(URL.createObjectURL(file))
+  }
+
+  function removeImage() {
+    setImageFile(null)
+    setImagePreview(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  async function uploadImage() {
+    if (!imageFile) return null
+    const compressed = await compressImage(imageFile)
+    const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.jpg`
+    const { data, error } = await supabase.storage
+      .from('whisper-images')
+      .upload(filename, compressed, { contentType: 'image/jpeg' })
+    if (error) throw error
+    const { data: { publicUrl } } = supabase.storage
+      .from('whisper-images')
+      .getPublicUrl(filename)
+    return publicUrl
+  }
 
   async function handleSend() {
     if (!message.trim() || sending) return
     setSending(true)
 
-    // GSAP lantern animation — a soft glow rises from the button
     const lantern = lanternRef.current
     if (lantern) {
       gsap.fromTo(lantern,
         { opacity: 0, y: 0, scale: 0.5 },
-        { opacity: 1, y: -120, scale: 1.2, duration: 1.2, ease: 'power2.out',
+        {
+          opacity: 1, y: -120, scale: 1.2, duration: 1.2, ease: 'power2.out',
           onComplete: () => gsap.to(lantern, { opacity: 0, y: -200, duration: 0.5, ease: 'power2.in' })
         }
       )
     }
 
     try {
+      const image_url = await uploadImage()
+
       const { error } = await supabase.from('whispers').insert([{
         trigger: trigger.trim() || null,
         message: message.trim(),
         mood: mood || null,
         location_name: location.trim() || null,
+        image_url: image_url || null,
         sent_at: new Date().toISOString(),
       }])
 
       if (error) throw error
 
-      await new Promise(r => setTimeout(r, 900)) // let animation breathe
+      await new Promise(r => setTimeout(r, 900))
       setSent(true)
       if (onSent) onSent()
 
       setTimeout(() => {
         setTrigger(''); setMessage(''); setMood(null); setLocation('')
+        setImageFile(null); setImagePreview(null)
         setSent(false); setSending(false)
         if (onClose) onClose()
       }, 1800)
@@ -78,7 +133,6 @@ export default function ComposeWhisper({ onClose, onSent }) {
           </span>
         </div>
 
-        {/* Title */}
         <motion.h2
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
@@ -110,6 +164,64 @@ export default function ComposeWhisper({ onClose, onSent }) {
               value={trigger}
               onChange={e => setTrigger(e.target.value)}
               maxLength={120}
+            />
+          </motion.div>
+
+          {/* Image attachment */}
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.18 }}>
+            <label style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '13px', color: 'rgba(44,44,44,0.5)', display: 'block', marginBottom: '8px' }}>
+              attach a photo <span style={{ color: 'rgba(44,44,44,0.25)' }}>(optional)</span>
+            </label>
+
+            {imagePreview ? (
+              <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden' }}>
+                <img
+                  src={imagePreview}
+                  alt="preview"
+                  style={{ width: '100%', maxHeight: '240px', objectFit: 'cover', display: 'block', borderRadius: '16px' }}
+                />
+                <button
+                  type="button"
+                  onClick={removeImage}
+                  style={{
+                    position: 'absolute', top: '10px', right: '10px',
+                    width: '28px', height: '28px', borderRadius: '50%',
+                    background: 'rgba(44,44,44,0.6)', color: 'white',
+                    border: 'none', cursor: 'pointer', fontSize: '14px',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}
+                >
+                  ×
+                </button>
+              </div>
+            ) : (
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                style={{
+                  border: '1.5px dashed rgba(232,196,184,0.6)',
+                  borderRadius: '16px',
+                  padding: '28px',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  background: 'rgba(250,246,240,0.5)',
+                }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--blush-deep)'}
+                onMouseLeave={e => e.currentTarget.style.borderColor = 'rgba(232,196,184,0.6)'}
+              >
+                <div style={{ fontSize: '24px', marginBottom: '6px' }}>🖼</div>
+                <p style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '13px', color: 'rgba(44,44,44,0.35)' }}>
+                  tap to add a photo
+                </p>
+              </div>
+            )}
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              style={{ display: 'none' }}
+              onChange={handleImagePick}
             />
           </motion.div>
 
@@ -158,7 +270,6 @@ export default function ComposeWhisper({ onClose, onSent }) {
             transition={{ delay: 0.35 }}
             style={{ position: 'relative', marginTop: '8px' }}
           >
-            {/* Lantern animation element */}
             <div
               ref={lanternRef}
               style={{
@@ -198,7 +309,7 @@ export default function ComposeWhisper({ onClose, onSent }) {
                 >
                   {sending ? (
                     <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', textTransform: 'none', fontSize: '16px', letterSpacing: 0 }}>
-                      sending…
+                      {imageFile ? 'uploading…' : 'sending…'}
                     </span>
                   ) : (
                     <>

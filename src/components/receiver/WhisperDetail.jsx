@@ -117,7 +117,21 @@ export default function WhisperDetail({ whisper, onClose }) {
               "{whisper.trigger}"
             </motion.p>
           )}
-
+          {/* Image */}
+          {whisper.image_url && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.28 }}
+              style={{ borderRadius: '16px', overflow: 'hidden', marginBottom: '16px' }}
+            >
+              <img
+                src={whisper.image_url}
+                alt="from Aankit"
+                style={{ width: '100%', maxHeight: '280px', objectFit: 'cover', display: 'block' }}
+              />
+            </motion.div>
+          )}
           {/* Message — the heart */}
           <motion.p
             initial={{ opacity: 0, y: 10 }}
