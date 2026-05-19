@@ -29,7 +29,7 @@
         opacity: 0;
         animation: fadeIn 2.5s ease-out 0.5s forwards;
       }
-      .for-jen {
+      .dedicated-tag {
         font-family: 'Cormorant Garamond', Georgia, serif;
         font-style: italic;
         fill: #C9A84C;
@@ -163,7 +163,7 @@
     <text x="400" y="195" class="subtitle">Gentle moments captured across the distance</text>
     
     <!-- Dedicated tag -->
-    <text x="400" y="235" class="for-jen">for Jennifer Lane ✦</text>
+    <text x="400" y="235" class="dedicated-tag">for a party of two ✦</text>
   </g>
 
   <!-- Little Branch Ornament at bottom-center -->

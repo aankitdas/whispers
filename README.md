@@ -14,7 +14,7 @@
 
 > *"A thought of you, captured in a quiet moment, floating across the digital ether to bloom on your screen."* 🌸
 
-**Whispers** is a private, asymmetric love-bridge built for a party of two. It isn't a loud chat app or another crowded social space. It is a quiet, dedicated digital haven where you (**Aankit**) can send gentle thoughts, reasons you love her, and sweet reminders to (**Jennifer Lane** / **Jen**) as they happen. 
+**Whispers** is a private, asymmetric love-bridge built for a party of two. It isn't a loud chat app or another crowded social space. It is a quiet, dedicated digital haven where you can send gentle thoughts, reasons you love your partner, and sweet reminders as they happen. 
 
 Every time she is on your mind, you blow a whisper into the breeze. On her side, it manifests as a soft ambient notification, gradually filling her calendar with glowing dots—a tangible, lasting proof of all the times you thought of her when she wasn't looking. 🧸✨
 
@@ -38,8 +38,8 @@ Whispers is split into two distinct spaces, accessible through custom URLs:
 
 | Path | Space | Intended For | Purpose |
 |:---:| :--- | :--- | :--- |
-| **`/send`** | **`Your Heart`** | **Aankit** ✍️ | Capture thoughts quickly, select moods (tender, playful, missing you, proud), write what triggered it, and keep track of your daily sending streak! |
-| **`/her`** | **`Her Garden`** | **Jen** 🏡 | Receive instant realtime whispers, view the interactive monthly calendar, open letters in full screen, and count the dots of affection. |
+| **`/send`** | **`Your Heart`** | **Sender** ✍️ | Capture thoughts quickly, select moods (tender, playful, missing you, proud), write what triggered it, and keep track of your daily sending streak! |
+| **`/her`** | **`Her Garden`** | **Receiver** 🏡 | Receive instant realtime whispers, view the interactive monthly calendar, open letters in full screen, and count the dots of affection. |
 
 *Both portals are locked with a secure **4-digit PIN** to keep your garden strictly private and safe.* 🔒
 
@@ -47,9 +47,9 @@ Whispers is split into two distinct spaces, accessible through custom URLs:
 
 ## ✦ Enchanted Features
 
-*   **Realtime Whispering:** Built with Supabase Realtime—new thoughts appear on Jen's side the exact second they are sent without needing a page refresh! ⚡
+*   **Realtime Whispering:** Built with Supabase Realtime—new thoughts appear on the receiver's side the exact second they are sent without needing a page refresh! ⚡
 *   **Whimsical Mood Selector:** Choose the tone of your whisper—whether it's a *tender* thought, a *playful* tease, a *missing you* sigh, or a *proud* cheer. 🎨
-*   **The Whispers Calendar:** A clean, minimal monthly grid where every whisper is stored as a soft rose or gold dot. Jen can click on any day to open the letters and read them again. 📅
+*   **The Whispers Calendar:** A clean, minimal monthly grid where every whisper is stored as a soft rose or gold dot. The receiver can click on any day to open the letters and read them again. 📅
 *   **Daily Streaks:** A warm little badge on your side to keep track of consecutive days of thinking of her. 
 *   **Ambient Physics:** High-fidelity, organic animations powered by **Framer Motion** + **GSAP**. Watch letters "bloom" open like a wax-sealed parchment, and see background petals drift by dynamically. 🍃
 
