@@ -33,7 +33,10 @@ export default function WhisperDetail({ whisper, onClose }) {
       supabase.from('whispers').update({ is_read: true }).eq('id', whisper.id)
     }
   }, [whisper])
-
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = '' }
+  }, [])
   if (!whisper) return null
 
   return (
@@ -48,6 +51,7 @@ export default function WhisperDetail({ whisper, onClose }) {
         backdropFilter: 'blur(8px)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         padding: '20px',
+        overflowY: 'hidden',
       }}
       onClick={onClose}
     >
@@ -56,123 +60,144 @@ export default function WhisperDetail({ whisper, onClose }) {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.92, y: 16 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        style={{ width: '100%', maxWidth: '400px' }}
+        style={{ width: '100%', maxWidth: '400px', maxHeight: '85vh', display: 'flex', flexDirection: 'column' }}
         onClick={e => e.stopPropagation()}
       >
         <div className="card" style={{
-          padding: '36px 28px',
           background: `radial-gradient(ellipse at top, ${mood.color} 0%, white 60%)`,
-          position: 'relative', overflow: 'hidden',
+          position: 'relative',
+          maxHeight: '85vh',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
         }}>
-          {/* Decorative top line */}
           <div style={{
-            position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
-            width: '40px', height: '3px', borderRadius: '3px',
-            background: 'linear-gradient(90deg, var(--blush), var(--gold))',
-          }} />
+            padding: '36px 28px',
+            overflowY: 'auto',
+            WebkitOverflowScrolling: 'touch',
+            flex: 1,
+          }}>
 
-          {/* From */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            style={{ marginBottom: '24px' }}
-          >
-            <p style={{ fontFamily: 'var(--font-display)', fontSize: '12px', letterSpacing: '0.15em', color: 'var(--sage-deep)', textTransform: 'uppercase', marginBottom: '4px' }}>
-              ✦ from Aankit
-            </p>
-            <p style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '13px', color: 'rgba(44,44,44,0.4)' }}>
-              {formatFull(whisper.sent_at || whisper.created_at)}
-              {whisper.location_name && ` · ${whisper.location_name}`}
-            </p>
-          </motion.div>
+            {/* Decorative top line */}
+            <div style={{
+              position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
+              width: '40px', height: '3px', borderRadius: '3px',
+              background: 'linear-gradient(90deg, var(--blush), var(--gold))',
+            }} />
+            <button
+              onClick={onClose}
+              style={{
+                position: 'absolute', top: '16px', right: '16px',
+                background: 'none', border: 'none', cursor: 'pointer',
+                fontSize: '20px', color: 'rgba(44,44,44,0.3)', lineHeight: 1,
+                padding: '4px',
+              }}
+            >
+              ×
+            </button>
+            {/* From */}
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              style={{ marginBottom: '24px' }}
+            >
+              <p style={{ fontFamily: 'var(--font-display)', fontSize: '12px', letterSpacing: '0.15em', color: 'var(--sage-deep)', textTransform: 'uppercase', marginBottom: '4px' }}>
+                ✦ from Aankit
+              </p>
+              <p style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '13px', color: 'rgba(44,44,44,0.4)' }}>
+                {formatFull(whisper.sent_at || whisper.created_at)}
+                {whisper.location_name && ` · ${whisper.location_name}`}
+              </p>
+            </motion.div>
 
-          {/* Mood */}
-          {whisper.mood && (
+            {/* Mood */}
+            {whisper.mood && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+                style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
+                <span style={{ fontSize: '22px' }}>{mood.emoji}</span>
+                <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '14px', color: 'var(--sage-deep)' }}>
+                  {customMoodLabel
+                    ? `he's feeling ${customMoodLabel}`
+                    : whisper.mood === 'missing you' ? "he's missing you"
+                      : whisper.mood === 'in awe' ? "he's in awe of you"
+                        : `he's feeling ${whisper.mood}`}
+                </span>
+              </motion.div>
+            )}
+
+            {/* Trigger */}
+            {whisper.trigger && (
+              <motion.p
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.25 }}
+                style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '15px', color: 'rgba(44,44,44,0.5)', marginBottom: '12px', lineHeight: 1.5 }}
+              >
+                "{whisper.trigger}"
+              </motion.p>
+            )}
+            {/* Image */}
+            {whisper.image_url && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.97 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.28 }}
+                style={{ borderRadius: '16px', overflow: 'hidden', marginBottom: '16px' }}
+              >
+                <img
+                  src={whisper.image_url}
+                  alt="from Aankit"
+                  style={{ width: '100%', maxHeight: '280px', objectFit: 'cover', display: 'block' }}
+                />
+              </motion.div>
+            )}
+            {/* Message — the heart */}
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.5 }}
+              style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 300, color: 'var(--charcoal)', lineHeight: 1.65, marginBottom: '28px' }}
+            >
+              {whisper.message}
+            </motion.p>
+
+            {/* Signature */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}
+              transition={{ delay: 0.45 }}
+              className="ornament-divider"
+              style={{ marginBottom: '20px' }}
             >
-              <span style={{ fontSize: '22px' }}>{mood.emoji}</span>
-              <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '14px', color: 'var(--sage-deep)' }}>
-                {customMoodLabel
-                  ? `he's feeling ${customMoodLabel}`
-                  : whisper.mood === 'missing you' ? "he's missing you"
-                    : whisper.mood === 'in awe' ? "he's in awe of you"
-                      : `he's feeling ${whisper.mood}`}
-              </span>
+              ✦
             </motion.div>
-          )}
 
-          {/* Trigger */}
-          {whisper.trigger && (
             <motion.p
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.25 }}
-              style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '15px', color: 'rgba(44,44,44,0.5)', marginBottom: '12px', lineHeight: 1.5 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '14px', color: 'rgba(44,44,44,0.4)', textAlign: 'center' }}
             >
-              "{whisper.trigger}"
+              with love, Aankit
             </motion.p>
-          )}
-          {/* Image */}
-          {whisper.image_url && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.97 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.28 }}
-              style={{ borderRadius: '16px', overflow: 'hidden', marginBottom: '16px' }}
+
+            {/* Close */}
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+              onClick={onClose}
+              className="btn-ghost"
+              style={{ width: '100%', marginTop: '24px' }}
             >
-              <img
-                src={whisper.image_url}
-                alt="from Aankit"
-                style={{ width: '100%', maxHeight: '280px', objectFit: 'cover', display: 'block' }}
-              />
-            </motion.div>
-          )}
-          {/* Message — the heart */}
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 300, color: 'var(--charcoal)', lineHeight: 1.65, marginBottom: '28px' }}
-          >
-            {whisper.message}
-          </motion.p>
-
-          {/* Signature */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.45 }}
-            className="ornament-divider"
-            style={{ marginBottom: '20px' }}
-          >
-            ✦
-          </motion.div>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '14px', color: 'rgba(44,44,44,0.4)', textAlign: 'center' }}
-          >
-            with love, Aankit
-          </motion.p>
-
-          {/* Close */}
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            onClick={onClose}
-            className="btn-ghost"
-            style={{ width: '100%', marginTop: '24px' }}
-          >
-            close
-          </motion.button>
+              close
+            </motion.button>
+          </div>
         </div>
       </motion.div>
     </motion.div>

@@ -73,7 +73,14 @@ export default function ReceiverHome() {
 
   const unread = whispers.filter(w => !w.is_read)
   const read = whispers.filter(w => w.is_read)
-
+  useEffect(() => {
+    if (unread.length > 0 && tab === 'latest') {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [unread.length, tab])
   return (
     <div className="page" style={{ background: 'var(--cream)' }}>
       <AnimatedBackground />
@@ -113,6 +120,7 @@ export default function ReceiverHome() {
               display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center',
               padding: '24px',
+              overflowY: 'auto',
             }}
           >
             <motion.div
@@ -133,9 +141,27 @@ export default function ReceiverHome() {
                   background: 'linear-gradient(135deg, rgba(250,246,240,0.97), rgba(242,235,224,0.97))',
                   textAlign: 'center',
                   cursor: 'pointer',
+                  position: 'relative',
                 }}
-                onClick={openEnvelope}
               >
+                {/* Close button */}
+                <button
+                  onClick={async e => {
+                    e.stopPropagation()
+                    await supabase.from('whispers').update({ is_read: true }).eq('is_read', false)
+                    setWhispers(whispers.map(x => ({ ...x, is_read: true })))
+                    setUnreadCount(0)
+                  }}
+                  style={{
+                    position: 'absolute', top: '16px', right: '16px',
+                    background: 'none', border: 'none', cursor: 'pointer',
+                    fontSize: '20px', color: 'rgba(44,44,44,0.3)', lineHeight: 1,
+                    padding: '4px',
+                  }}
+                >
+                  ×
+                </button>
+
                 <motion.div
                   animate={{ scale: [1, 1.06, 1] }}
                   transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
@@ -157,9 +183,9 @@ export default function ReceiverHome() {
                   {unread.length > 1 ? `he sent you ${unread.length} whispers` : 'he sent you a whisper'}
                 </p>
 
-                <div className="btn-primary" style={{ pointerEvents: 'none' }}>
+                <button className="btn-primary" onClick={openEnvelope}>
                   open ✦
-                </div>
+                </button>
               </div>
 
               <p style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '12px', color: 'rgba(255,255,255,0.5)', textAlign: 'center', marginTop: '16px' }}>

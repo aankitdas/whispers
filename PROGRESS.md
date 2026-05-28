@@ -3,10 +3,10 @@
 
 ---
 
-## 🟡 Current Phase: PLANNING
+## 🟢 Current Phase: LIVE — Phase 4 Polish ongoing
 
-**Last updated:** Session 1
-**Current focus:** Architecture decisions + UI research
+**Last updated:** Session 3
+**Live URL:** whisper-one-flame.vercel.app
 
 ---
 
@@ -23,105 +23,64 @@
 - [x] **Phase 2 COMPLETE** — Supabase schema deployed, realtime confirmed working
 - [x] **Phase 3 COMPLETE** — Hosted on Vercel (whisper-one-flame.vercel.app)
 - [x] **SMOKE TEST PASSED ✦** — Realtime whisper sent phone → laptop, notification fired instantly
+- [x] **Phase 4 Polish (Session 2):**
+  - [x] PIN screen fixed for desktop layout
+  - [x] Stats row spacing fixed (flex-wrap, proper margin)
+  - [x] Compose CTA card cleaned up (removed fake input, centered label)
+  - [x] Mood selector — added 3 new presets (in awe, silly, lucky), moved "missing you" to top
+  - [x] Mood selector — custom mood with emoji picker via "+" button
+  - [x] Receiver side — envelope overlay UX (blurred background, single card, tap to open)
+  - [x] Receiver side — unread/read separation (envelope overlay vs whispers bucket)
+  - [x] Receiver side — notification banner auto-dismisses after 4s
+  - [x] Receiver side — envelope only shows on latest tab, not calendar
+  - [x] Receiver side — is_read properly persists to Supabase on open
+  - [x] WhisperDetail — mood emoji + label shows correctly for presets and custom moods
+  - [x] Image upload — compress + upload to Supabase Storage, shows in WhisperDetail
+  - [x] Supabase Storage bucket created (whisper-images, public)
+  - [x] image_url column added to whispers table
+  - [x] Fern favicon (PNG) added
+  - [x] Desktop font size bump via media query
+- [x] **Phase 4 Polish (Session 3):**
+  - [x] Auth persists across refresh (Zustand persist middleware, localStorage)
+  - [x] dev/main branch workflow set up — prod only updates on merge
+  - [x] Envelope overlay — × button to dismiss without opening
+  - [x] Envelope overlay — OPEN button separated from card click
+  - [x] Envelope overlay — body scroll locked when overlay is showing
+  - [x] WhisperDetail — body scroll locked when card is open
+  - [x] WhisperDetail — card scrolls internally, scrollbar clipped within border radius
+  - [x] WhisperDetail — × button top right for easy mobile close
 
 ---
 
-## 🔄 In Progress — Phase 4: Polish & Aesthetics
+## 🔄 Deferred / Up Next
+
+### Phase 4 remaining
+- [ ] PWA setup — service worker, manifest, home screen install
+- [ ] Web Push notifications — so she gets notified even with tab closed
+- [ ] Multiple unread whispers — let her page through them one by one
+- [ ] Mobile safe area insets (iOS notch/home bar)
+
+### Phase 5: Nice to haves
+- [ ] Sound design — soft chime on whisper receipt
+- [ ] Wax seal / letter seal animation on send
+- [ ] Custom domain (whispers.love or similar)
+- [ ] "What made you think of me?" illustrated category icons
 
 ---
 
-## 📋 Up Next (Phase 1: Foundation)
+## 🐛 Known Issues
 
-### 1.1 Project Scaffold
-- [ ] `npm create vite@latest whispers -- --template react`
-- [ ] Install dependencies: framer-motion, gsap, @supabase/supabase-js, zustand, react-router-dom
-- [ ] Install dev: tailwindcss (for utility layout, NOT for design system)
-- [ ] Set up Google Fonts (Cormorant Garamond + DM Sans) in index.html
-- [ ] Create CSS variables file with full color/type system
-- [ ] Create folder structure per DECISIONS.md
-
-### 1.2 Supabase Setup
-- [ ] Create new Supabase project ("whispers")
-- [ ] Run schema SQL (whispers table)
-- [ ] Enable Row Level Security
-- [ ] Create .env file with VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
-- [ ] Test connection
-
-### 1.3 Routing
-- [ ] Set up React Router v6
-- [ ] /send → SenderHome
-- [ ] /her → ReceiverHome
-- [ ] / → Redirect based on last used side (localStorage)
+- Supabase free tier pauses after 7 days inactivity (~30s wake-up on first load)
+- No push notifications yet — she needs tab open to receive in real time
 
 ---
 
-## 📋 Phase 2: Core Functionality
+## 💡 Ideas Parking Lot
 
-### 2.1 Sender Side
-- [ ] ComposeWhisper form (trigger + message + mood + optional location)
-- [ ] Form validation (message required, trigger optional)
-- [ ] Submit to Supabase
-- [ ] SenderHome with compose button + today's count
-- [ ] SenderHistory list view
-
-### 2.2 Receiver Side
-- [ ] ReceiverHome with latest whisper display
-- [ ] Realtime subscription (useWhisperListener hook)
-- [ ] "New whisper" animated notification
-- [ ] Mark as read on view
-
-### 2.3 Calendar
-- [ ] WhisperCalendar month grid
-- [ ] Dot indicators per day
-- [ ] Tap day → expand whisper list
-- [ ] WhisperDetail "open letter" view
-
----
-
-## 📋 Phase 3: Polish & Animations
-
-### 3.1 Animation Set-Pieces
-- [ ] Page load entrance animations (Framer Motion)
-- [ ] ComposeWhisper → "send" animation (GSAP — thought rising like a lantern)
-- [ ] WhisperCard bloom animation on mount
-- [ ] ReceiverHome notification entrance
-- [ ] Calendar day hover + expand animations
-
-### 3.2 Ambient Effects
-- [ ] Floating particle/petal background (CSS keyframes)
-- [ ] Subtle texture overlay on cream background
-- [ ] Smooth page transitions between routes
-
-### 3.3 Mobile Responsiveness
-- [ ] All views work on phone (primary use case)
-- [ ] Touch-friendly tap targets
-- [ ] Safe area insets for iOS
-
----
-
-## 📋 Phase 4: Deployment & Handoff
-
-- [ ] Vercel project setup
-- [ ] Environment variables in Vercel
-- [ ] Custom 404 handling (SPA routing)
-- [ ] Share /her link with her
-- [ ] Test end-to-end on two real devices
-
----
-
-## 🐛 Known Issues / Blockers
-
-*None yet — project just started*
-
----
-
-## 💡 Ideas Parking Lot (don't implement yet)
-
-- A "letter seal" animation when sending (wax seal press effect)
-- Her side has a "garden" metaphor — each whisper is a flower that blooms
-- Streak counter with a small flame icon
-- "What made you think of me?" categories with illustrated icons (flower, song, food, laugh, miss you)
 - Sound design — a very soft chime when she receives a whisper
+- Wax seal press animation on send
+- Streak milestone celebrations (7 days, 30 days)
+- "Garden" view — each whisper is a flower that blooms on a canvas
 
 ---
 
@@ -129,6 +88,19 @@
 
 ### Session 1
 - Full ideation + planning complete
-- Research done on animation libraries, Supabase limits
 - Stack finalized: React/Vite + Framer Motion + GSAP + Supabase + Vercel
-- Waiting on answers to open questions before scaffolding
+- All open questions answered
+
+### Session 2
+- Full app built, deployed, smoke tested
+- Realtime confirmed working across devices
+- Major UX polish: envelope overlay, read/unread logic, custom moods, image upload
+- Favicon added
+- Push notifications deferred to next session
+
+### Session 3
+- Auth persistence fixed (survives refresh)
+- dev/main branch workflow established
+- Mobile scroll fixes: body lock, internal card scroll, scrollbar clipped to border radius
+- Envelope and WhisperDetail both have × close buttons
+- Envelope OPEN button separated from card tap
