@@ -8,5 +8,5 @@ export default function HerPage() {
   if (!receiverAuthenticated) {
     return <PinScreen side="receiver" onSuccess={() => setReceiverAuthenticated(true)} />
   }
-  return <ReceiverHome />
+  return <ReceiverHome target="her" />
 }

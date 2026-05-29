@@ -25,7 +25,7 @@ async function compressImage(file, maxWidth = 1200, quality = 0.75) {
   })
 }
 
-export default function ComposeWhisper({ onClose, onSent }) {
+export default function ComposeWhisper({ onClose, onSent, demoMode = false }) {
   const [trigger, setTrigger] = useState('')
   const [message, setMessage] = useState('')
   const [mood, setMood] = useState(null)
@@ -90,6 +90,7 @@ export default function ComposeWhisper({ onClose, onSent }) {
         location_name: location.trim() || null,
         image_url: image_url || null,
         sent_at: new Date().toISOString(),
+        target: demoMode ? 'demo' : 'her',
       }])
 
       if (error) throw error

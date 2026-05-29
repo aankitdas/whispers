@@ -49,7 +49,7 @@ function friendlyDate(dateStr) {
 export default function SenderHome() {
   const [composing, setComposing] = useState(false)
   const [loading, setLoading] = useState(true)
-  const { whispers, setWhispers, streak, setStreak, addWhisper } = useStore()
+  const { whispers, setWhispers, streak, setStreak, addWhisper, demoMode, setDemoMode } = useStore()
 
   useEffect(() => {
     loadWhispers()
@@ -83,7 +83,7 @@ export default function SenderHome() {
   if (composing) {
     return (
       <AnimatePresence>
-        <ComposeWhisper onClose={() => setComposing(false)} onSent={handleSent} />
+        <ComposeWhisper onClose={() => setComposing(false)} onSent={handleSent} demoMode={demoMode} />
       </AnimatePresence>
     )
   }
@@ -135,7 +135,36 @@ export default function SenderHome() {
             <span>{whispers.length} total</span>
           </div>
         </motion.div>
-
+        {/* Demo toggle */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '10px' }}
+        >
+          <button
+            onClick={() => setDemoMode(!demoMode)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '8px',
+              background: demoMode ? 'var(--charcoal)' : 'transparent',
+              color: demoMode ? 'var(--cream)' : 'rgba(44,44,44,0.4)',
+              border: '1.5px solid',
+              borderColor: demoMode ? 'var(--charcoal)' : 'rgba(44,44,44,0.15)',
+              borderRadius: 'var(--radius-pill)',
+              padding: '5px 14px', fontSize: '12px',
+              fontFamily: 'var(--font-body)', cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            <span>{demoMode ? '⚡' : '○'}</span>
+            <span>demo mode {demoMode ? 'on' : 'off'}</span>
+          </button>
+          {demoMode && (
+            <span style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '12px', color: 'rgba(44,44,44,0.35)' }}>
+              whispers go to /demo
+            </span>
+          )}
+        </motion.div>
         {/* Compose CTA */}
         <motion.div
           initial={{ opacity: 0, scale: 0.97 }}

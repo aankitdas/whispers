@@ -1,17 +1,13 @@
 import { useEffect } from 'react'
 import { supabase } from './supabase'
 
-/**
- * Subscribe to real-time new whispers from Supabase.
- * Calls onNewWhisper(whisper) whenever a new row is inserted.
- */
-export function useWhisperListener(onNewWhisper) {
+export function useWhisperListener(onNewWhisper, target = 'her') {
   useEffect(() => {
     const channel = supabase
-      .channel('whispers-realtime')
+      .channel(`whispers-realtime-${target}`)
       .on(
         'postgres_changes',
-        { event: 'INSERT', schema: 'public', table: 'whispers' },
+        { event: 'INSERT', schema: 'public', table: 'whispers', filter: `target=eq.${target}` },
         (payload) => {
           if (payload.new) onNewWhisper(payload.new)
         }
@@ -21,5 +17,5 @@ export function useWhisperListener(onNewWhisper) {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [onNewWhisper])
+  }, [target])
 }

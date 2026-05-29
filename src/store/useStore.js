@@ -7,6 +7,8 @@ export const useStore = create(
       // Auth
       senderAuthenticated: false,
       receiverAuthenticated: false,
+      demoMode: false,
+      setDemoMode: (val) => set({ demoMode: val }),
       setSenderAuthenticated: (val) => set({ senderAuthenticated: val }),
       setReceiverAuthenticated: (val) => set({ receiverAuthenticated: val }),
 

@@ -11,7 +11,7 @@ import WhisperCard from '../shared/WhisperCard'
 
 const TABS = ['latest', 'calendar']
 
-export default function ReceiverHome() {
+export default function ReceiverHome({ target = 'her' }) {
   const [tab, setTab] = useState('latest')
   const [loading, setLoading] = useState(true)
   const [selectedWhisper, setSelectedWhisper] = useState(null)
@@ -31,6 +31,7 @@ export default function ReceiverHome() {
     const { data, error } = await supabase
       .from('whispers')
       .select('*')
+      .eq('target', target)
       .order('sent_at', { ascending: false })
       .limit(200)
     if (!error && data) {
@@ -46,7 +47,7 @@ export default function ReceiverHome() {
     incrementUnread()
   }, [])
 
-  useWhisperListener(handleNewWhisper)
+  useWhisperListener(handleNewWhisper, target)
 
   async function markRead(w) {
     if (w.is_read) return
