@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./public/whisper-banner.svg" alt="Whispers Banner" width="800" />
+  <img src="./public/whisper.png" alt="Whispers Banner" width="800" />
 </p>
 
 <p align="center">
