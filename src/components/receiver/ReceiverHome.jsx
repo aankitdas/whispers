@@ -8,8 +8,9 @@ import WhisperNotification from './WhisperNotification'
 import WhisperDetail from './WhisperDetail'
 import WhisperCalendar from './WhisperCalendar'
 import WhisperCard from '../shared/WhisperCard'
+import GardenView from './GardenView'
 
-const TABS = ['latest', 'calendar']
+const TABS = ['latest', 'calendar', 'garden']
 
 export default function ReceiverHome({ target = 'her' }) {
   const [tab, setTab] = useState('latest')
@@ -101,6 +102,9 @@ export default function ReceiverHome({ target = 'her' }) {
           <WhisperDetail
             whisper={selectedWhisper}
             onClose={() => setSelectedWhisper(null)}
+            onFavouriteChange={(id, val) => {
+              setWhispers(prev => prev.map(w => w.id === id ? { ...w, is_favourite: val } : w))
+            }}
           />
         )}
       </AnimatePresence>
@@ -319,6 +323,22 @@ export default function ReceiverHome({ target = 'her' }) {
               style={{ margin: '0 -20px' }}
             >
               <WhisperCalendar whispers={whispers} onWhisperClick={openWhisper} />
+            </motion.div>
+          )}{tab === 'garden' && (
+            <motion.div
+              key="garden"
+              initial={{ opacity: 0, x: 8 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -8 }}
+              transition={{ duration: 0.3 }}
+            >
+              <GardenView
+                whispers={whispers}
+                onWhisperClick={openWhisper}
+                onFavouriteChange={(id, val) => {
+                  setWhispers(prev => prev.map(w => w.id === id ? { ...w, is_favourite: val } : w))
+                }}
+              />
             </motion.div>
           )}
         </AnimatePresence>

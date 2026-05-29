@@ -254,6 +254,7 @@ export default function SenderHome() {
           <WhisperDetail
             whisper={selectedWhisper}
             onClose={() => setSelectedWhisper(null)}
+            showFavourite={false}
           />
         )}
       </AnimatePresence>

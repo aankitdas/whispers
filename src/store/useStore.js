@@ -14,7 +14,9 @@ export const useStore = create(
 
       // Whispers data
       whispers: [],
-      setWhispers: (whispers) => set({ whispers }),
+      setWhispers: (whispers) => set((state) => ({
+        whispers: typeof whispers === 'function' ? whispers(state.whispers) : whispers
+      })),
       addWhisper: (whisper) => set((state) => ({ whispers: [whisper, ...state.whispers] })),
 
       // Unread count (receiver side)
@@ -38,7 +40,7 @@ export const useStore = create(
     {
       name: 'whispers-auth',
       // Only persist auth flags — not whispers data (always fresh from Supabase)
-      partialState: (state) => ({
+      partialize: (state) => ({
         senderAuthenticated: state.senderAuthenticated,
         receiverAuthenticated: state.receiverAuthenticated,
       }),

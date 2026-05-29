@@ -58,6 +58,10 @@
   - [x] ✦ confirm button removed from mood adder (redundant)
   - [x] Grammarly conflict fixed on custom mood input
   - [x] Vercel Web Analytics added via Vercel Agent
+  - [x] Favourites feature — hold-to-fill heart, sparkle animation, Garden tab
+- [x] Garden tab — third tab on receiver side, filters favourited whispers  
+- [x] Zustand persist bug fixed (partialState → partialize)
+- [x] FavouriteHeart hidden on sender side via showFavourite prop
 
 ---
 

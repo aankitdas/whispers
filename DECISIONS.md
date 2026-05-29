@@ -209,3 +209,8 @@ whispers/
 - Image UX: expands within WhisperDetail card (Option B), text fades to 12% opacity when expanded
 - Custom moods: stored as "{emoji} {text}" string, parsed on render — no DB schema change needed
 - Vercel Web Analytics enabled (free tier)
+- Favourites: is_favourite boolean column on whispers table
+- FavouriteHeart interaction: hold-to-fill blush heart, wobble + sparkle burst on complete
+- Garden tab: standalone GardenView component, easy to rewire to floating leaf button in future
+- WhisperDetail accepts showFavourite prop (default true) — pass false on sender side
+- Zustand persist key must be partialize not partialState
