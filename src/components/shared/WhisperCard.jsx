@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion'
 
 const MOOD_META = {
-  tender:     { emoji: '🌸', label: 'tender' },
-  playful:    { emoji: '✨', label: 'playful' },
+  tender: { emoji: '🌸', label: 'tender' },
+  playful: { emoji: '✨', label: 'playful' },
   'missing you': { emoji: '🌙', label: 'missing you' },
-  proud:      { emoji: '🌿', label: 'proud' },
-  grateful:   { emoji: '🌼', label: 'grateful' },
+  proud: { emoji: '🌿', label: 'proud' },
+  grateful: { emoji: '🌼', label: 'grateful' },
 }
 
 function formatTime(dateStr) {
@@ -19,7 +19,10 @@ function formatDate(dateStr) {
 }
 
 export default function WhisperCard({ whisper, onClick, compact = false }) {
-  const mood = MOOD_META[whisper.mood] || { emoji: '✦', label: whisper.mood || '' }
+  const isPreset = MOOD_META[whisper.mood]
+  const mood = isPreset
+    ? MOOD_META[whisper.mood]
+    : { emoji: whisper.mood?.split(' ')[0] || '✦', label: whisper.mood?.split(' ').slice(1).join(' ') || whisper.mood || '' }
 
   if (compact) {
     return (

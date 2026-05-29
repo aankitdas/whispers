@@ -29,11 +29,18 @@ export default function MoodSelector({ selected, onChange }) {
   }
 
   function confirmCustom() {
-    const text = customText.trim()
+    if (!customText.trim()) onChange(null)
+    setAdding(false)
+  }
+
+  function handleTextChange(e) {
+    setCustomText(e.target.value)
+    const text = e.target.value.trim()
     if (text) {
       onChange(`${customEmoji} ${text}`)
+    } else {
+      onChange(null)
     }
-    setAdding(false)
   }
 
   function handleKeyDown(e) {
@@ -95,7 +102,10 @@ export default function MoodSelector({ selected, onChange }) {
               <button
                 key={e}
                 type="button"
-                onClick={() => setCustomEmoji(e)}
+                onClick={() => {
+                  setCustomEmoji(e)
+                  if (customText.trim()) onChange(`${e} ${customText.trim()}`)
+                }}
                 style={{
                   fontSize: '20px', padding: '4px 6px', borderRadius: '8px', border: 'none',
                   background: customEmoji === e ? 'rgba(232,196,184,0.5)' : 'transparent',
@@ -115,21 +125,17 @@ export default function MoodSelector({ selected, onChange }) {
               ref={inputRef}
               type="text"
               className="input-field"
+              data-gramm="false"
+              data-gramm_editor="false"
+              data-enable-grammarly="false"
               placeholder="describe the feeling…"
               value={customText}
-              onChange={e => setCustomText(e.target.value)}
+              onChange={handleTextChange}
               onKeyDown={handleKeyDown}
               maxLength={40}
               style={{ flex: 1, padding: '10px 14px', fontSize: '14px' }}
             />
-            <button
-              type="button"
-              className="mood-tag"
-              onClick={confirmCustom}
-              style={{ flexShrink: 0, padding: '10px 16px' }}
-            >
-              ✦
-            </button>
+
             <button
               type="button"
               className="mood-tag"

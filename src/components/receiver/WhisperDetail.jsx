@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { supabase } from '../../lib/supabase'
 import { useEffect } from 'react'
 
@@ -18,15 +19,95 @@ function formatFull(dateStr) {
   return d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' }) +
     ' at ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }
+function ImageExpand({ url, onExpandChange }) {
+  const [expanded, setExpanded] = useState(false)
+  function toggle() {
+    const next = !expanded
+    setExpanded(next)
+    onExpandChange(next)
+  }
+  return (
+    <motion.div
+      style={{ marginBottom: '16px', position: 'relative' }}
+      animate={{ marginBottom: expanded ? '24px' : '16px' }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <motion.div
+        style={{
+          borderRadius: '16px',
+          overflow: 'hidden',
+          cursor: 'pointer',
+        }}
+        onClick={toggle}
+      >
+        <motion.img
+          src={url}
+          alt="from Aankit"
+          style={{ width: '100%', objectFit: 'cover', display: 'block' }}
+          animate={{ maxHeight: expanded ? '420px' : '220px' }}
+          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        />
 
+        {/* Expand/collapse hint */}
+        <AnimatePresence>
+          {!expanded && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              style={{
+                position: 'absolute', bottom: '10px', right: '10px',
+                background: 'rgba(44,44,44,0.4)',
+                borderRadius: '20px',
+                padding: '4px 10px',
+                fontSize: '11px',
+                color: 'white',
+                fontFamily: 'var(--font-body)',
+                pointerEvents: 'none',
+              }}
+            >
+              tap to expand
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Close hint when expanded */}
+        <AnimatePresence>
+          {expanded && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              style={{
+                position: 'absolute', top: '10px', right: '10px',
+                background: 'rgba(44,44,44,0.4)',
+                borderRadius: '50%',
+                width: '28px', height: '28px',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: '16px', color: 'white',
+                pointerEvents: 'none',
+              }}
+            >
+              ×
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </motion.div>
+  )
+}
 export default function WhisperDetail({ whisper, onClose }) {
   const isPreset = whisper?.mood && MOOD_META[whisper.mood]
+  const customParts = !isPreset && whisper?.mood
+    ? whisper.mood.split(' ')
+    : null
   const mood = isPreset
     ? MOOD_META[whisper.mood]
-    : { emoji: [...(whisper?.mood || '')][0] || '✦', color: 'rgba(232,196,184,0.2)' }
-  const customMoodLabel = !isPreset && whisper?.mood
-    ? (whisper.mood.match(/\s(.+)/) || [])[1] || whisper.mood
+    : { emoji: customParts?.[0] || '✦', color: 'rgba(232,196,184,0.2)' }
+  const customMoodLabel = customParts
+    ? customParts.slice(1).join(' ')
     : null
+  const [imageExpanded, setImageExpanded] = useState(false)
 
   useEffect(() => {
     if (whisper && !whisper.is_read) {
@@ -129,62 +210,56 @@ export default function WhisperDetail({ whisper, onClose }) {
                 </span>
               </motion.div>
             )}
-
-            {/* Trigger */}
-            {whisper.trigger && (
-              <motion.p
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.25 }}
-                style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '15px', color: 'rgba(44,44,44,0.5)', marginBottom: '12px', lineHeight: 1.5 }}
-              >
-                "{whisper.trigger}"
-              </motion.p>
-            )}
-            {/* Image */}
+            {/* Image — outside fade wrapper so it doesn't blur */}
             {whisper.image_url && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.97 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.28 }}
-                style={{ borderRadius: '16px', overflow: 'hidden', marginBottom: '16px' }}
-              >
-                <img
-                  src={whisper.image_url}
-                  alt="from Aankit"
-                  style={{ width: '100%', maxHeight: '280px', objectFit: 'cover', display: 'block' }}
-                />
-              </motion.div>
+              <ImageExpand url={whisper.image_url} onExpandChange={setImageExpanded} />
             )}
-            {/* Message — the heart */}
-            <motion.p
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 300, color: 'var(--charcoal)', lineHeight: 1.65, marginBottom: '28px' }}
-            >
-              {whisper.message}
-            </motion.p>
 
-            {/* Signature */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.45 }}
-              className="ornament-divider"
-              style={{ marginBottom: '20px' }}
+              animate={{ opacity: imageExpanded ? 0.12 : 1 }}
+              transition={{ duration: 0.35 }}
             >
-              ✦
-            </motion.div>
+              {/* Trigger */}
+              {whisper.trigger && (
+                <motion.p
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.25 }}
+                  style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '15px', color: 'rgba(44,44,44,0.5)', marginBottom: '12px', lineHeight: 1.5 }}
+                >
+                  "{whisper.trigger}"
+                </motion.p>
+              )}
+              {/* Message — the heart */}
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+                style={{ fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 300, color: 'var(--charcoal)', lineHeight: 1.65, marginBottom: '28px' }}
+              >
+                {whisper.message}
+              </motion.p>
 
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '14px', color: 'rgba(44,44,44,0.4)', textAlign: 'center' }}
-            >
-              with love, Aankit
-            </motion.p>
+              {/* Signature */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.45 }}
+                className="ornament-divider"
+                style={{ marginBottom: '20px' }}
+              >
+                ✦
+              </motion.div>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                style={{ fontFamily: 'var(--font-display)', fontStyle: 'italic', fontSize: '14px', color: 'rgba(44,44,44,0.4)', textAlign: 'center' }}
+              >
+                with love, Aankit
+              </motion.p>
+            </motion.div>{/* closes imageExpanded fade wrapper */}
 
             {/* Close */}
             <motion.button
@@ -197,8 +272,9 @@ export default function WhisperDetail({ whisper, onClose }) {
             >
               close
             </motion.button>
-          </div>
-        </div>
+
+          </div>{/* closes inner scroll div */}
+        </div>{/* closes card */}
       </motion.div>
     </motion.div>
   )
