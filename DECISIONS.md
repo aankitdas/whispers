@@ -93,6 +93,8 @@ create table whispers (
 
 -- Row Level Security: only authenticated users can read/write
 ```
+-- Added in Session 4:
+image_url text  -- public URL to Supabase Storage image (optional)
 
 ---
 
@@ -176,7 +178,9 @@ whispers/
 - Custom animated assets (Lottie flowers, hand-drawn illustrations)
 - Custom domain
 - Mobile app wrapper (Capacitor or React Native)
-
+- [x] OS push notifications — still deferred but PWA groundwork next
+- [ ] Image deletion (currently images persist in storage forever)
+- [ ] Supabase keep-alive ping to prevent free tier pause
 ---
 
 ## 8. Decisions Locked
@@ -197,3 +201,11 @@ whispers/
 5. Mark as read in DB on open
 6. Unread count badge on calendar icon
 
+## 10. Additional Decisions (Session 3-4)
+
+- Auth persists via Zustand `persist` middleware → localStorage (auth flags only, not whisper data)
+- Branch strategy: `dev` for all work, `main` = production only, Vercel deploys both
+- Image uploads: compressed client-side via Canvas API (max 1200px, 0.75 quality) before Supabase Storage upload
+- Image UX: expands within WhisperDetail card (Option B), text fades to 12% opacity when expanded
+- Custom moods: stored as "{emoji} {text}" string, parsed on render — no DB schema change needed
+- Vercel Web Analytics enabled (free tier)

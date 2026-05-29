@@ -5,7 +5,7 @@
 
 ## 🟢 Current Phase: LIVE — Phase 4 Polish ongoing
 
-**Last updated:** Session 3
+**Last updated:** Session 4
 **Live URL:** whisper-one-flame.vercel.app
 
 ---
@@ -49,6 +49,15 @@
   - [x] WhisperDetail — body scroll locked when card is open
   - [x] WhisperDetail — card scrolls internally, scrollbar clipped within border radius
   - [x] WhisperDetail — × button top right for easy mobile close
+- [x] **Phase 4 Polish (Session 4):**
+  - [x] Image expand/collapse in WhisperDetail (Option B — expands within card)
+  - [x] Text fades to 12% opacity when image is expanded
+  - [x] "tap to expand" / × hint overlays on image
+  - [x] Custom mood emoji shows correctly in WhisperCard compact view
+  - [x] Custom mood live update — chip updates as you type, no confirm step needed
+  - [x] ✦ confirm button removed from mood adder (redundant)
+  - [x] Grammarly conflict fixed on custom mood input
+  - [x] Vercel Web Analytics added via Vercel Agent
 
 ---
 
@@ -104,3 +113,9 @@
 - Mobile scroll fixes: body lock, internal card scroll, scrollbar clipped to border radius
 - Envelope and WhisperDetail both have × close buttons
 - Envelope OPEN button separated from card tap
+
+### Session 4
+- Image expand/collapse within card (Option B)
+- Custom mood fixes: emoji in compact card, live update while typing, removed confirm button
+- Vercel Web Analytics enabled
+- All changes merged to main and live
