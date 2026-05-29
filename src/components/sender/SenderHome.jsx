@@ -5,6 +5,7 @@ import { useStore } from '../../store/useStore'
 import WhisperCard from '../shared/WhisperCard'
 import ComposeWhisper from './ComposeWhisper'
 import AnimatedBackground from '../shared/AnimatedBackground'
+import WhisperDetail from '../receiver/WhisperDetail'
 
 function computeStreak(whispers) {
   if (!whispers.length) return 0
@@ -49,6 +50,7 @@ function friendlyDate(dateStr) {
 export default function SenderHome() {
   const [composing, setComposing] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [selectedWhisper, setSelectedWhisper] = useState(null)
   const { whispers, setWhispers, streak, setStreak, addWhisper, demoMode, setDemoMode } = useStore()
 
   useEffect(() => {
@@ -164,6 +166,22 @@ export default function SenderHome() {
               whispers go to /demo
             </span>
           )}
+          {demoMode && (
+            <button
+              onClick={async () => {
+                await supabase.from('whispers').delete().eq('target', 'demo')
+                loadWhispers()
+              }}
+              style={{
+                fontFamily: 'var(--font-display)', fontStyle: 'italic',
+                fontSize: '12px', color: 'rgba(44,44,44,0.35)',
+                background: 'none', border: 'none', cursor: 'pointer',
+                textDecoration: 'underline', padding: '0',
+              }}
+            >
+              clear demo
+            </button>
+          )}
         </motion.div>
         {/* Compose CTA */}
         <motion.div
@@ -222,7 +240,8 @@ export default function SenderHome() {
                 </p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   {dayWhispers.map(w => (
-                    <WhisperCard key={w.id} whisper={w} compact />
+                    <WhisperCard key={w.id} whisper={w} compact onClick={() => setSelectedWhisper(w)} />
+
                   ))}
                 </div>
               </motion.div>
@@ -230,6 +249,14 @@ export default function SenderHome() {
           </div>
         )}
       </div>
+      <AnimatePresence>
+        {selectedWhisper && (
+          <WhisperDetail
+            whisper={selectedWhisper}
+            onClose={() => setSelectedWhisper(null)}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }
